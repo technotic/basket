@@ -59,24 +59,38 @@ public class BasketTest {
         BigDecimal result = fixture.totalCost();
 
         // Then
-        assertThat(result, equalTo(new BigDecimal("0.20")));
+        assertThat(result, equalTo(new BigDecimal("0.10")));
     }
 
     @Test
-    public void shouldCalculateBasketCostOfMultipleItemMultipleItemTypeBasket() {
+    public void shouldCalculateBasketCostOfMultipleItemMultipleItemTypeBasketWithDifferentPrices() {
 
         // Given
         fixture.addItems(Item.BANANA, 2);
         fixture.addItems(Item.APPLE, 1);
-        fixture.addItems(Item.LEMON, 3);
         given(priceRepository.getPrice(Item.BANANA)).willReturn(new BigDecimal("0.10"));
         given(priceRepository.getPrice(Item.APPLE)).willReturn(new BigDecimal("0.20"));
-        given(priceRepository.getPrice(Item.LEMON)).willReturn(new BigDecimal("0.30"));
 
         // When
         BigDecimal result = fixture.totalCost();
 
         // Then
-        assertThat(result, equalTo(new BigDecimal("1.30")));
+        assertThat(result, equalTo(new BigDecimal("0.30")));
+    }
+
+    @Test
+    public void shouldCalculateBasketCostOfMultipleItemMultipleItemTypeBasketWithSameLowestPrice() {
+
+        // Given
+        fixture.addItems(Item.BANANA, 2);
+        fixture.addItems(Item.APPLE, 1);
+        given(priceRepository.getPrice(Item.BANANA)).willReturn(new BigDecimal("0.10"));
+        given(priceRepository.getPrice(Item.APPLE)).willReturn(new BigDecimal("0.10"));
+
+        // When
+        BigDecimal result = fixture.totalCost();
+
+        // Then
+        assertThat(result, equalTo(new BigDecimal("0.20")));
     }
 }
